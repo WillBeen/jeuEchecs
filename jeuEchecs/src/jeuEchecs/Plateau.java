@@ -1,14 +1,14 @@
 package jeuEchecs;
 
 public class Plateau {
-	Object[][] plateau;
+	Cellule[][] plateau;
 	
 	public Plateau() {
-		this.plateau = new Object[8][8];
+		this.plateau = new Cellule[8][8];
 	}
 	
 	public Plateau(int hauteur, int largeur) {
-		this.plateau = new Object[hauteur][largeur];
+		this.plateau = new Cellule[hauteur][largeur];
 	}
 	
 //	ACCESSEURS
