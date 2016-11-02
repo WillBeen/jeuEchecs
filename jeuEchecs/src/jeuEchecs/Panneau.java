@@ -13,6 +13,9 @@ public class Panneau extends JPanel {
 	private Plateau plateau;
 	private int bordure = 10;
 	private int coteCellule;
+	private int cursorX = -100;
+	private int cursorY = -100;
+	private int cursorRay = 5;
 	
 	public void setSizes() {
 		plateau = new Plateau(8, 8);
@@ -21,6 +24,8 @@ public class Panneau extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g) {
+		g.setColor(Color.WHITE);
+		g.fillRect(0, 0, this.getWidth(), this.getHeight());
 		g.setColor(Color.BLACK);
 		g.drawRect(bordure, bordure, 
 				this.plateau.getLargeur() * this.coteCellule,
@@ -32,5 +37,16 @@ public class Panneau extends JPanel {
 				}
 			}
 		}
+		g.setColor(Color.RED);
+//		g.fillOval(100, 100, 50, 50);
+		g.fillOval(cursorX - cursorRay, cursorY - cursorRay, 2* cursorRay, 2 * cursorRay);
+	}
+	
+	public void setCursorX(int x) {
+		this.cursorX = x;
+	}
+	
+	public void setCursorY(int y) {
+		this.cursorY = y;
 	}
 }
