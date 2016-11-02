@@ -1,14 +1,31 @@
 package jeuEchecs;
 
+import java.awt.Color;
+
 public class Plateau {
-	Cellule[][] plateau;
+	private Cell[][] plateau;
 	
 	public Plateau() {
-		this.plateau = new Cellule[8][8];
+		initCellules(8,8);
 	}
 	
 	public Plateau(int hauteur, int largeur) {
-		this.plateau = new Cellule[hauteur][largeur];
+		initCellules(hauteur, largeur);
+	}
+	
+	private void initCellules(int hauteur, int largeur) {
+		Color couleur;
+		this.plateau = new Cell[hauteur][largeur];
+		for (int i = 0; i < hauteur; i++) {
+			for (int j = 0; j < largeur; j++) {
+				if ((i + j) % 2 == 0) {
+					couleur = Color.WHITE;
+				} else {
+					couleur = Color.BLACK;
+				}
+				this.plateau[i][j] = new Cell(couleur, i, j);
+			}
+		}
 	}
 	
 //	ACCESSEURS
@@ -17,6 +34,9 @@ public class Plateau {
 	}
 	public int getLargeur() {
 		return this.plateau[0].length;
+	}
+	public Cell getCell(int row, int column) {
+		return this.plateau[row][column];
 	}
 
 }

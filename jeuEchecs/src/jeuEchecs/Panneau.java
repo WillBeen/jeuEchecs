@@ -26,19 +26,23 @@ public class Panneau extends JPanel {
 	public void paintComponent(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
+		Cell selectedCell = this.getCell(cursorX, cursorY);
+		selectedCell.setColor(Color.RED);
+		for (int i = 0; i < this.plateau.getLargeur(); i++) {
+			for (int j = 0; j < this.plateau.getHauteur(); j++) {
+				g.setColor(this.plateau.getCell(i, j).getCouleur());
+				g.fillRect(bordure + (i * this.coteCellule), bordure + (j * this.coteCellule), this.coteCellule, this.coteCellule);
+			}
+		}
 		g.setColor(Color.BLACK);
 		g.drawRect(bordure, bordure, 
 				this.plateau.getLargeur() * this.coteCellule,
 				this.plateau.getHauteur() * this.coteCellule);
-		for (int i = 0; i < this.plateau.getHauteur(); i++) {
-			for (int j = 0; j < this.plateau.getLargeur(); j++) {
-				if (((i + j) % 2) == 0) {
-					g.fillRect(bordure + (j * this.coteCellule), bordure + (i * this.coteCellule), this.coteCellule, this.coteCellule);
-				}
-			}
-		}
 		g.setColor(Color.RED);
-//		g.fillOval(100, 100, 50, 50);
+		if (selectedCell != null) {
+			g.drawRect(bordure + (selectedCell.getColumn() * this.coteCellule), 
+					bordure + (selectedCell.getRow() * this.coteCellule), this.coteCellule, this.coteCellule);
+		}
 		g.fillOval(cursorX - cursorRay, cursorY - cursorRay, 2* cursorRay, 2 * cursorRay);
 	}
 	
@@ -49,4 +53,18 @@ public class Panneau extends JPanel {
 	public void setCursorY(int y) {
 		this.cursorY = y;
 	}
+	
+	public Cell getCell(int x, int y) {
+//		Cell cell;
+//		if (x > bordure && y > bordure 
+//				&& x < bordure + this.plateau.getLargeur() * this.coteCellule
+//				&& y < bordure + this.plateau.getHauteur() * this.coteCellule) {
+//			cell = this.plateau.getCell(x - bordure - (x / this.coteCellule), 
+//					y - bordure - (y / this.coteCellule));
+//		} else {
+//			cell = null;
+//		}
+		return this.plateau.getCell(2,4);
+	}
+	
 }
