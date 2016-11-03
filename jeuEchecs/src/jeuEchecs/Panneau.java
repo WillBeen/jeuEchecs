@@ -1,7 +1,9 @@
 package jeuEchecs;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
@@ -25,11 +27,11 @@ public class Panneau extends JPanel {
 	}
 	
 	public void paintComponent(Graphics g) {
-		displayPlate(g);
+		displayPlate((Graphics2D)g);
 	}
 	
 //	Displays the chessplate
-	private void displayPlate(Graphics g) {
+	private void displayPlate(Graphics2D g) {
 //		DRAW THE CHESSPLATE
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
@@ -46,7 +48,10 @@ public class Panneau extends JPanel {
 		
 //		HIGHLIGHT THE MOUSEOVERED CELL
 		if (onPlate(cursorX, cursorY)) {
-			
+			float dash1[] = {10.0f, 5.0f};
+			BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+                    BasicStroke.JOIN_MITER, 10.0f, dash1, 5.0f);
+			g.setStroke(bs);
 			g.setColor(Color.BLUE);
 			g.drawRect(this.columnToX(this.xToColumn(cursorX)),
 					this.rowToY(this.yToRow(cursorY)),
