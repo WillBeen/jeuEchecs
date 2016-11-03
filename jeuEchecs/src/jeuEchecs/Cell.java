@@ -8,7 +8,7 @@ public class Cell {
 	private int column;
 	private Piece piece = null;
 	
-	Cell(Color color, int row, int column) {
+	public Cell(Color color, int row, int column) {
 		this.color = color;
 	}
 	
