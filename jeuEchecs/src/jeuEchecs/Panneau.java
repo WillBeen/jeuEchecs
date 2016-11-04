@@ -13,15 +13,23 @@ public class Panneau extends JPanel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private Plateau plateau;
-	private int bordure = 10;
+	private int bordure = 20;
 	private int coteCellule;
 	private int cursorX = -100;
 	private int cursorY = -100;
+	private boolean onPlate = false;
+	private float dash[] = {10.0f, 5.0f};
+	private float dashPhase = 0.0f;
 	
-	public String tmpTxt = "";
+//	Debug msg to display
+	public String dbgMsg = "";
 	
+	public Panneau() {
+		plateau = new Plateau(8,8);
+	}
+	
+//	Determines the width (= height) of each cell
 	public void setSizes() {
-		plateau = new Plateau(8, 8);
 		this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.plateau.getHauteur(),
 				(this.getWidth() - 2 * bordure) / this.plateau.getLargeur());
 	}
@@ -47,16 +55,40 @@ public class Panneau extends JPanel {
 				this.plateau.getHauteur() * this.coteCellule);
 		
 //		HIGHLIGHT THE MOUSEOVERED CELL
-		if (onPlate(cursorX, cursorY)) {
-			float dash1[] = {10.0f, 5.0f};
+		setOnPlate(cursorX, cursorY);
+		if (this.onPlate) {
+//			this.dashPhase = ((this.dashPhase * 10.0f + 1) % 150.0f) / 10.0f;
+			this.dashPhase = (this.dashPhase + 0.1f) % (this.dash[0] + this.dash[1]);
 			BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_MITER, 10.0f, dash1, 5.0f);
+                    BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
 			g.setStroke(bs);
 			g.setColor(Color.BLUE);
 			g.drawRect(this.columnToX(this.xToColumn(cursorX)),
 					this.rowToY(this.yToRow(cursorY)),
 					this.coteCellule, this.coteCellule);
 		}		
+		
+//		MESSAGE DE DEBUG
+		g.setColor(Color.BLACK);
+//		this.dbgMsg = "pan height : " + this.getHeight() + " | hauteurCellule : " + this.coteCellule;
+		g.drawString(this.dbgMsg, 10, bordure - 5);
+	}
+	
+	public void animation() {
+		while (true) {
+			while (true) {
+				try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+				this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.plateau.getHauteur(),
+						(this.getWidth() - 2 * bordure) / this.plateau.getLargeur());
+				this.increaseDashPhase();
+				this.repaint();
+			}
+		}
+		
 	}
 	
 	public void setCursorX(int x) {
@@ -67,20 +99,19 @@ public class Panneau extends JPanel {
 		this.cursorY = y;
 	}
 	
+//	Return the cell under the coordinates (x,y)
 	public Cell getCell(int x, int y) {
-		Cell cell;
 		int cellX = Math.max(0, Math.min( this.plateau.getLargeur() - 1, (x - bordure) / this.coteCellule));
 		int cellY = Math.max(0, Math.min( this.plateau.getHauteur() - 1, (y - bordure) / this.coteCellule));
-		this.tmpTxt = cellX + ";" + cellY;
 		return this.plateau.getCell(cellX, cellY);
 	}
 	
-//	Return the chessplate column on this X line	
+//	Return the chessplate column on this X coordinate	
 	private int xToColumn(int x) {
 		return Math.max(0, Math.min( this.plateau.getLargeur() - 1, (x - bordure) / this.coteCellule));
 	}
 	
-//	Return the chessplate row on this Y line
+//	Return the chessplate row on this Y coordinate
 	private int yToRow(int y) {
 		return Math.max(0, Math.min( this.plateau.getHauteur() - 1, (y - bordure) / this.coteCellule));
 	}
@@ -95,20 +126,36 @@ public class Panneau extends JPanel {
 		return bordure + row * this.coteCellule;
 	}
 	
-//	Return the chessplate's width
+//	Return the chessplate's width (x coordinate)
 	private int getPlateWidth() {
 		return this.plateau.getLargeur() * this.coteCellule;
 	}
 	
-//	Return the chessplate's height
+//	Return the chessplate's height (y coordinate)
 	private int getPlateHeight() {
 		return this.plateau.getHauteur() * this.coteCellule;
 	}
 	
-//	True if the X,Y position is on the chessplate
-	private boolean onPlate(int x, int y) {
-		return ((x > bordure) && (y > bordure)
+//	Says if the cursor is on the plate
+	private void setOnPlate(int x, int y) {
+		this.onPlate = ((x > bordure) && (y > bordure)
 				&& (x < (bordure + this.getPlateWidth()))
 				&& (y < (bordure + this.getPlateHeight())));
+	}
+	
+//	Access the isOnPlate property in order to know if the cursor is on the plate
+	public boolean isOnPlate() {
+		return this.onPlate;
+	}
+	
+//	Access the dashPhase property in order to animate it
+	public float getDashPhase() {
+		return this.dashPhase;
+	}
+	public void setDashPhase(float dashPhase) {
+		this.dashPhase = dashPhase;
+	}
+	public void increaseDashPhase() {
+		this.dashPhase = ((this.dashPhase + 0.1f) % (dash[0] + dash[1]));
 	}
 }

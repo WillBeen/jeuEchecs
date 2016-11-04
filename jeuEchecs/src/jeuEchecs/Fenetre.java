@@ -5,7 +5,7 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
-public class Fenetre extends JFrame implements MouseMotionListener{
+public class Fenetre extends JFrame implements MouseMotionListener {
 	/**
 	 * 
 	 */
@@ -21,19 +21,11 @@ public class Fenetre extends JFrame implements MouseMotionListener{
 	    pan.addMouseMotionListener(this);
 	    addMouseMotionListener(this);
 		this.setVisible(true);
-		pan.setSizes();
-		go();
+		Thread threadAnim = new Thread(new Animation(pan));
+		threadAnim.start();
 	}
 
 	private void go(){
-//		while (true) {
-//		      pan.repaint();  
-//		      try {
-//		        Thread.sleep(10);
-//		      } catch (InterruptedException e) {
-//		        e.printStackTrace();
-//		      }
-//		}
 	}
 	@Override
 	public void mouseDragged(MouseEvent e) {
@@ -45,6 +37,5 @@ public class Fenetre extends JFrame implements MouseMotionListener{
 	public void mouseMoved(MouseEvent e) {
 		pan.setCursorX(e.getX());
 		pan.setCursorY(e.getY());
-		pan.repaint();
 	}
 }

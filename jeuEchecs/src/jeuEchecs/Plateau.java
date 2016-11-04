@@ -19,9 +19,9 @@ public class Plateau {
 		for (int i = 0; i < hauteur; i++) {
 			for (int j = 0; j < largeur; j++) {
 				if ((i + j) % 2 == 0) {
-					couleur = Color.WHITE;
+					couleur = new Color(244, 235, 124);
 				} else {
-					couleur = Color.BLACK;
+					couleur = new Color(50, 10, 10);
 				}
 				this.plateau[i][j] = new Cell(couleur, i, j);
 			}
