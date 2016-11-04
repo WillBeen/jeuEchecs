@@ -7,12 +7,12 @@ import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
-public class Panneau extends JPanel {
+public class Panel extends JPanel {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Plateau plateau;
+	private Board board;
 	private int bordure = 20;
 	private int coteCellule;
 	private int cursorX = -100;
@@ -24,14 +24,15 @@ public class Panneau extends JPanel {
 //	Debug msg to display
 	public String dbgMsg = "";
 	
-	public Panneau() {
-		plateau = new Plateau(8,8);
+	public Panel() {
+//		board = new Board(8,8);
+		board = (Board)new DraughtBoard();
 	}
 	
 //	Determines the width (= height) of each cell
 	public void setSizes() {
-		this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.plateau.getHauteur(),
-				(this.getWidth() - 2 * bordure) / this.plateau.getLargeur());
+		this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.board.getHauteur(),
+				(this.getWidth() - 2 * bordure) / this.board.getLargeur());
 	}
 	
 	public void paintComponent(Graphics g) {
@@ -40,21 +41,29 @@ public class Panneau extends JPanel {
 	
 //	Displays the chessplate
 	private void displayPlate(Graphics2D g) {
-//		DRAW THE CHESSPLATE
+//		DRAWS THE BOARD
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		for (int i = 0; i < this.plateau.getLargeur(); i++) {
-			for (int j = 0; j < this.plateau.getHauteur(); j++) {
-				g.setColor(this.plateau.getCell(i, j).getCouleur());
+		for (int i = 0; i < this.board.getLargeur(); i++) {
+			for (int j = 0; j < this.board.getHauteur(); j++) {
+				Cell cell = this.board.getCell(i, j);
+				g.setColor(cell.getCouleur());
 				g.fillRect(bordure + (i * this.coteCellule), bordure + (j * this.coteCellule), this.coteCellule, this.coteCellule);
+//				DRAWS THE PIECE
+				if (cell.getPiece() != null) {
+					g.drawImage(cell.getPiece().getImage(), 
+							this.columnToX(i) + (int)(this.coteCellule * 0.05f), 
+							this.rowToY(j) + (int)(this.coteCellule * 0.05f), 
+							(int)(this.coteCellule * 0.9f), (int)(this.coteCellule * 0.9f), null);
+				}
 			}
 		}
 		g.setColor(Color.BLACK);
 		g.drawRect(bordure, bordure, 
-				this.plateau.getLargeur() * this.coteCellule,
-				this.plateau.getHauteur() * this.coteCellule);
+				this.board.getLargeur() * this.coteCellule,
+				this.board.getHauteur() * this.coteCellule);
 		
-//		HIGHLIGHT THE MOUSEOVERED CELL
+//		HIGHLIGHTS THE MOUSEOVERED CELL
 		setOnPlate(cursorX, cursorY);
 		if (this.onPlate) {
 //			this.dashPhase = ((this.dashPhase * 10.0f + 1) % 150.0f) / 10.0f;
@@ -66,12 +75,12 @@ public class Panneau extends JPanel {
 			g.drawRect(this.columnToX(this.xToColumn(cursorX)),
 					this.rowToY(this.yToRow(cursorY)),
 					this.coteCellule, this.coteCellule);
-		}		
+		}				
 		
 //		MESSAGE DE DEBUG
-		g.setColor(Color.BLACK);
-//		this.dbgMsg = "pan height : " + this.getHeight() + " | hauteurCellule : " + this.coteCellule;
-		g.drawString(this.dbgMsg, 10, bordure - 5);
+//		g.setColor(Color.BLACK);
+//		this.dbgMsg = "";
+//		g.drawString(this.dbgMsg, 10, bordure - 5);
 	}
 	
 	public void animation() {
@@ -82,8 +91,8 @@ public class Panneau extends JPanel {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.plateau.getHauteur(),
-						(this.getWidth() - 2 * bordure) / this.plateau.getLargeur());
+				this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.board.getHauteur(),
+						(this.getWidth() - 2 * bordure) / this.board.getLargeur());
 				this.increaseDashPhase();
 				this.repaint();
 			}
@@ -101,19 +110,19 @@ public class Panneau extends JPanel {
 	
 //	Return the cell under the coordinates (x,y)
 	public Cell getCell(int x, int y) {
-		int cellX = Math.max(0, Math.min( this.plateau.getLargeur() - 1, (x - bordure) / this.coteCellule));
-		int cellY = Math.max(0, Math.min( this.plateau.getHauteur() - 1, (y - bordure) / this.coteCellule));
-		return this.plateau.getCell(cellX, cellY);
+		int cellX = Math.max(0, Math.min( this.board.getLargeur() - 1, (x - bordure) / this.coteCellule));
+		int cellY = Math.max(0, Math.min( this.board.getHauteur() - 1, (y - bordure) / this.coteCellule));
+		return this.board.getCell(cellX, cellY);
 	}
 	
 //	Return the chessplate column on this X coordinate	
 	private int xToColumn(int x) {
-		return Math.max(0, Math.min( this.plateau.getLargeur() - 1, (x - bordure) / this.coteCellule));
+		return Math.max(0, Math.min( this.board.getLargeur() - 1, (x - bordure) / this.coteCellule));
 	}
 	
 //	Return the chessplate row on this Y coordinate
 	private int yToRow(int y) {
-		return Math.max(0, Math.min( this.plateau.getHauteur() - 1, (y - bordure) / this.coteCellule));
+		return Math.max(0, Math.min( this.board.getHauteur() - 1, (y - bordure) / this.coteCellule));
 	}
 
 //	Return the X position of this chessplate column
@@ -128,12 +137,12 @@ public class Panneau extends JPanel {
 	
 //	Return the chessplate's width (x coordinate)
 	private int getPlateWidth() {
-		return this.plateau.getLargeur() * this.coteCellule;
+		return this.board.getLargeur() * this.coteCellule;
 	}
 	
 //	Return the chessplate's height (y coordinate)
 	private int getPlateHeight() {
-		return this.plateau.getHauteur() * this.coteCellule;
+		return this.board.getHauteur() * this.coteCellule;
 	}
 	
 //	Says if the cursor is on the plate

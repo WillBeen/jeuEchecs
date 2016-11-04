@@ -5,14 +5,14 @@ import java.awt.event.MouseMotionListener;
 
 import javax.swing.JFrame;
 
-public class Fenetre extends JFrame implements MouseMotionListener {
+public class Window extends JFrame implements MouseMotionListener {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Panneau pan = new Panneau();
+	private Panel pan = new Panel();
 
-	public Fenetre(){
+	public Window(){
 		this.setSize(800, 600);
 		this.setTitle("Jeu d'échecs");
 	    this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

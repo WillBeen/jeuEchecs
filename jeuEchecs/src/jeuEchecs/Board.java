@@ -2,20 +2,19 @@ package jeuEchecs;
 
 import java.awt.Color;
 
-public class Plateau {
-	private Cell[][] plateau;
+public class Board {
+	private Cell[][] board;
 	
-	public Plateau() {
-		initCellules(8,8);
+	public Board() {
 	}
 	
-	public Plateau(int hauteur, int largeur) {
+	public Board(int hauteur, int largeur) {
 		initCellules(hauteur, largeur);
 	}
 	
 	private void initCellules(int hauteur, int largeur) {
 		Color couleur;
-		this.plateau = new Cell[hauteur][largeur];
+		this.board = new Cell[hauteur][largeur];
 		for (int i = 0; i < hauteur; i++) {
 			for (int j = 0; j < largeur; j++) {
 				if ((i + j) % 2 == 0) {
@@ -23,20 +22,24 @@ public class Plateau {
 				} else {
 					couleur = new Color(50, 10, 10);
 				}
-				this.plateau[i][j] = new Cell(couleur, i, j);
+				this.board[i][j] = new Cell(couleur, i, j);
 			}
 		}
 	}
 	
+	public void initGame(){
+		
+	}
+	
 //	ACCESSEURS
 	public int getHauteur() {
-		return this.plateau.length;
+		return this.board.length;
 	}
 	public int getLargeur() {
-		return this.plateau[0].length;
+		return this.board[0].length;
 	}
 	public Cell getCell(int row, int column) {
-		return this.plateau[row][column];
+		return this.board[row][column];
 	}
 
 }

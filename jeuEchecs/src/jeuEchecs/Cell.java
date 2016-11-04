@@ -25,4 +25,11 @@ public class Cell {
 	public void setColor(Color color) {
 		this.color = color;
 	}
+	
+	public Piece getPiece() {
+		return this.piece;
+	}
+	public void setPiece(Piece piece) {
+		this.piece = piece;
+	}
 }
