@@ -1,5 +1,5 @@
 package jeuEchecs;
-
+// commentaire pourri a enlever
 import java.awt.Color;
 
 public class Plateau {
