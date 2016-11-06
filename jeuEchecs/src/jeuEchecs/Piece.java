@@ -3,7 +3,7 @@ package jeuEchecs;
 import java.awt.Image;
 
 public abstract class Piece {
-	private int color;
+	protected int color;
 	protected Image img;
 	public static final int BLACK = 0;
 	public static final int WHITE = 1;
@@ -11,6 +11,8 @@ public abstract class Piece {
 	Piece(int color) {
 		this.color = color;
 	}
+	
+	public abstract boolean isMoveAllowed(Cell from, Cell to);
 	
 	public int getColor() {
 		return this.color;

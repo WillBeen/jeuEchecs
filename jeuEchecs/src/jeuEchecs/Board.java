@@ -2,7 +2,7 @@ package jeuEchecs;
 
 import java.awt.Color;
 
-public class Board {
+public abstract class Board {
 	private Cell[][] board;
 	
 	public Board() {
@@ -12,23 +12,17 @@ public class Board {
 		initCellules(hauteur, largeur);
 	}
 	
-	private void initCellules(int hauteur, int largeur) {
-		Color couleur;
-		this.board = new Cell[hauteur][largeur];
+	protected void initCellules(int hauteur, int largeur) {
+		board = new Cell[hauteur][largeur];
 		for (int i = 0; i < hauteur; i++) {
 			for (int j = 0; j < largeur; j++) {
 				if ((i + j) % 2 == 0) {
-					couleur = new Color(244, 235, 124);
+					board[i][j] = new Cell(Cell.WHITE, i, j);
 				} else {
-					couleur = new Color(50, 10, 10);
+					board[i][j] = new Cell(Cell.BLACK, i, j);
 				}
-				this.board[i][j] = new Cell(couleur, i, j);
 			}
 		}
-	}
-	
-	public void initGame(){
-		
 	}
 	
 //	ACCESSEURS
@@ -40,6 +34,14 @@ public class Board {
 	}
 	public Cell getCell(int row, int column) {
 		return this.board[row][column];
+	}
+	
+	public void movePiece(Cell from, Cell to) {
+//		from.setPiece(board[from.x][from.y].getPiece());
+		if (from.getPiece().isMoveAllowed(from, to)) {
+			to.setPiece(from.getPiece());
+			from.setPiece(null);
+		}
 	}
 
 }
