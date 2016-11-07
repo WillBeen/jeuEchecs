@@ -59,6 +59,7 @@ public class Window extends JFrame implements MouseListener, MouseMotionListener
 	public void mousePressed(MouseEvent e) {
 		pan.setMoveFrom(e.getPoint());
 		pan.setMoveTo(e.getPoint());
+		pan.setMousePressed(true);
 	}
 
 	@Override
@@ -66,6 +67,7 @@ public class Window extends JFrame implements MouseListener, MouseMotionListener
 		pan.movePiece();
 		pan.setMoveFrom(null);
 		pan.setMoveTo(null);
+		pan.setMousePressed(false);
 	}
 
 	public Point getDragOrigin() {

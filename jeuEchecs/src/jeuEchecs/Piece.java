@@ -21,4 +21,6 @@ public abstract class Piece {
 	public Image getImage() {
 		return this.img;
 	}
+	
+	public abstract void movePiece(Cell from, Cell to, Board board);
 }

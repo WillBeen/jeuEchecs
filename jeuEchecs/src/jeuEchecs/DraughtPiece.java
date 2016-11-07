@@ -1,5 +1,6 @@
 package jeuEchecs;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
@@ -12,9 +13,9 @@ public class DraughtPiece extends Piece {
 		super(color);
 		try {
 			if (color == Piece.BLACK) {
-				this.img = ImageIO.read(new File("images/draughts/pion_dame_noir.png"));
+				this.img = ImageIO.read(new File("images/draughts/blackDraughtPiece.png"));
 			} else {
-				this.img = ImageIO.read(new File("images/draughts/pion_dame_blanc.png"));
+				this.img = ImageIO.read(new File("images/draughts/whiteDraughtPiece.png"));
 			}
         } catch (IOException e) {
         	e.printStackTrace();
@@ -34,13 +35,12 @@ public class DraughtPiece extends Piece {
 
 //	Returns a boolean to determines if the move is a simple move
 	public boolean isSimpleMove(Cell fromCell, Cell toCell, Board board) {
-		boolean destinationIsEmpty = false;
 		boolean simpleMoveOK = false;
 		Point from = new Point(fromCell.getColumn(), fromCell.getRow());
 		Point to = new Point(toCell.getColumn(), toCell.getRow());
 		Piece toPiece = toCell.getPiece();
 //		False if there is already a piece on the target cell
-		destinationIsEmpty = toPiece == null;
+		boolean destinationIsEmpty = toPiece == null;
 //		Look at the direction of the move if it's a simple move
 		int direction;
 		if (color == Piece.BLACK) {
@@ -55,14 +55,13 @@ public class DraughtPiece extends Piece {
 
 //	Returns a boolean to determines if the move is a double move
 	public boolean isDoubleMove(Cell fromCell, Cell toCell, Board board) {
-		boolean destinationIsEmpty = false;
 		boolean doubleMoveOK = false;
 		Point from = new Point(fromCell.getColumn(), fromCell.getRow());
 		Point to = new Point(toCell.getColumn(), toCell.getRow());
 		Piece fromPiece = fromCell.getPiece();
 		Piece toPiece = toCell.getPiece();
 //		False if there is already a piece on the target cell
-		destinationIsEmpty = toPiece == null;
+		boolean destinationIsEmpty = toPiece == null;
 //		If it's a double move
 		if((Math.abs(to.x - from.x) == 2) && (Math.abs(to.y - from.y) == 2) && destinationIsEmpty) {
 //			If there is a piece in the "eaten" cell
@@ -75,5 +74,23 @@ public class DraughtPiece extends Piece {
 		}
 		
 		return doubleMoveOK;
+	}
+	
+	public void movePiece(Cell from, Cell to, Board board) {
+		if (isSimpleMove(from, to, board)) {
+			to.setPiece(from.getPiece());
+			from.setPiece(null);
+		} else if (isDoubleMove(from, to, board)) {
+			to.setPiece(from.getPiece());
+			from.setPiece(null);
+			board.getCell((from.getColumn() + to.getColumn()) /2, (from.getRow() + to.getRow()) /2).setPiece(null);
+		}
+		
+		if ((to.getRow() == board.getHeight() - 1) && (color == Piece.BLACK)) {
+			to.setPiece(new EnglishDraughtKing(Piece.BLACK));
+		} else if ((to.getRow() == 0) && (color == Piece.WHITE)) {
+			to.setPiece(new EnglishDraughtKing(Piece.WHITE));
+		}
+		
 	}
 }

@@ -25,18 +25,19 @@ public class Panel extends JPanel {
 	public Point moveTo = null;
 	private Cell fromCell = null;
 	private Cell toCell = null;
+	private boolean mousePressed = false;
 	
 //	Debug msg to display
 	public String dbgMsg = "";
 	
 	public Panel() {
 //		board = new Board(8,8);
-		board = (Board)new DraughtBoard();
+		board = (Board)new EnglishDraughtBoard();
 	}
 	
 //	Determines the width (= height) of each cell
 	public void setSizes() {
-		this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.board.getHeigh(),
+		this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.board.getHeight(),
 				(this.getWidth() - 2 * bordure) / this.board.getWidth());
 	}
 	
@@ -49,16 +50,16 @@ public class Panel extends JPanel {
 //		DRAWS THE BOARD
 		g.setColor(Color.WHITE);
 		g.fillRect(0, 0, this.getWidth(), this.getHeight());
-		for (int i = 0; i < this.board.getWidth(); i++) {
-			for (int j = 0; j < this.board.getHeigh(); j++) {
-				Cell cell = this.board.getCell(i, j);
+		for (int row = 0; row < this.board.getHeight(); row++) {
+			for (int column = 0; column < this.board.getWidth(); column++) {
+				Cell cell = this.board.getCell(column, row);
 				g.setColor(cell.getColor());
-				g.fillRect(bordure + (i * this.coteCellule), bordure + (j * this.coteCellule), this.coteCellule, this.coteCellule);
+				g.fillRect(bordure + (column * this.coteCellule), bordure + (row * this.coteCellule), this.coteCellule, this.coteCellule);
 //				DRAWS THE PIECE
 				if (cell.getPiece() != null) {
 					g.drawImage(cell.getPiece().getImage(), 
-							this.columnToX(i) + (int)(this.coteCellule * 0.05f), 
-							this.rowToY(j) + (int)(this.coteCellule * 0.05f), 
+							this.columnToX(column) + (int)(this.coteCellule * 0.05f), 
+							this.rowToY(row) + (int)(this.coteCellule * 0.05f), 
 							(int)(this.coteCellule * 0.9f), (int)(this.coteCellule * 0.9f), null);
 				}
 			}
@@ -66,18 +67,21 @@ public class Panel extends JPanel {
 		g.setColor(Color.BLACK);
 		g.drawRect(bordure, bordure, 
 				this.board.getWidth() * this.coteCellule,
-				this.board.getHeigh() * this.coteCellule);
+				this.board.getHeight() * this.coteCellule);
 		
 		setCursorOnBoard(cursorX, cursorY);
 		if (this.cursorOnPlate) {
-//			HIGHLIGHTS THE MOUSEOVERED CELL
+//			CHANGES THE DRAWINLINE TO A DASHED LINE (the dashPhase property is animated)
 			BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
                     BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
 			g.setStroke(bs);
-			g.setColor(Color.BLUE);
-			g.drawRect(this.columnToX(this.xToColumn(cursorX)),
-					this.rowToY(this.yToRow(cursorY)),
-					this.coteCellule, this.coteCellule);
+//			HIGHLIGHTS THE MOUSEOVERED CELL IF THE MOUSE BUTTON IS NOT PRESSED
+			if (!mousePressed) {
+				g.setColor(Color.BLUE);
+				g.drawRect(this.columnToX(this.xToColumn(cursorX)),
+						this.rowToY(this.yToRow(cursorY)),
+						this.coteCellule, this.coteCellule);
+			}
 //			DRAWS THE MOVEMENT LINE
 			if (fromCell != null && toCell != null) {
 				if (fromCell.getPiece() != null) {
@@ -101,17 +105,21 @@ public class Panel extends JPanel {
 		while (true) {
 			while (true) {
 				try {
-					Thread.sleep(10);
+					Thread.sleep(5);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				this.coteCellule = Math.min((this.getHeight() - 2 * bordure) / this.board.getHeigh(),
-						(this.getWidth() - 2 * bordure) / this.board.getWidth());
-				this.increaseDashPhase();
-				this.repaint();
+				coteCellule = Math.min((getHeight() - 2 * bordure) / board.getHeight(),
+						(getWidth() - 2 * bordure) / board.getWidth());
+				increaseDashPhase();
+				repaint();
 			}
 		}
 		
+	}
+	
+	public void setMousePressed(boolean mousePressed) {
+		this.mousePressed = mousePressed;
 	}
 	
 	public void setCursorX(int x) {
@@ -125,7 +133,7 @@ public class Panel extends JPanel {
 //	Return the cell under the coordinates (x,y)
 	public Cell getCell(int x, int y) {
 		int cellX = Math.max(0, Math.min( this.board.getWidth() - 1, (x - bordure) / this.coteCellule));
-		int cellY = Math.max(0, Math.min( this.board.getHeigh() - 1, (y - bordure) / this.coteCellule));
+		int cellY = Math.max(0, Math.min( this.board.getHeight() - 1, (y - bordure) / this.coteCellule));
 		return this.board.getCell(cellX, cellY);
 	}
 	public Cell getCell(Point p){
@@ -139,7 +147,7 @@ public class Panel extends JPanel {
 	
 //	Return the board row on this Y coordinate
 	private int yToRow(int y) {
-		return Math.max(0, Math.min( this.board.getHeigh() - 1, (y - bordure) / this.coteCellule));
+		return Math.max(0, Math.min( this.board.getHeight() - 1, (y - bordure) / this.coteCellule));
 	}
 
 //	Return the X position of this board column
@@ -160,20 +168,20 @@ public class Panel extends JPanel {
 	}
 	
 //	Return the board width (x coordinate)
-	private int getPlateWidth() {
+	private int getBoardWidth() {
 		return this.board.getWidth() * this.coteCellule;
 	}
 	
 //	Return the board height (y coordinate)
-	private int getPlateHeight() {
-		return this.board.getHeigh() * this.coteCellule;
+	private int getBoardHeight() {
+		return this.board.getHeight() * this.coteCellule;
 	}
 	
 //	Says if the cursor is on the plate
 	private void setCursorOnBoard(int x, int y) {
 		this.cursorOnPlate = ((x > bordure) && (y > bordure)
-				&& (x < (bordure + this.getPlateWidth()))
-				&& (y < (bordure + this.getPlateHeight())));
+				&& (x < (bordure + this.getBoardWidth()))
+				&& (y < (bordure + this.getBoardHeight())));
 	}
 	
 //	Access the isOnPlate property in order to know if the cursor is on the plate
@@ -182,8 +190,8 @@ public class Panel extends JPanel {
 	}
 	public boolean isOnBoard(Point p) {
 		return ((p.x > bordure) && (p.y > bordure)
-				&& (p.x < (bordure + this.getPlateWidth()))
-				&& (p.y < (bordure + this.getPlateHeight())));
+				&& (p.x < (bordure + this.getBoardWidth()))
+				&& (p.y < (bordure + this.getBoardHeight())));
 	}
 	
 //	Access the dashPhase property in order to animate it
@@ -194,7 +202,7 @@ public class Panel extends JPanel {
 		this.dashPhase = dashPhase;
 	}
 	public void increaseDashPhase() {
-		dashPhase = ((dash[0] + dash[1]  + dashPhase - 0.2f) % (dash[0] + dash[1]));
+		dashPhase = ((dash[0] + dash[1]  + dashPhase - 0.4f) % (dash[0] + dash[1]));
 	}
 	
 	public Board getBoard(){

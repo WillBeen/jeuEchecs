@@ -17,8 +17,8 @@ public class Cell {
 		} else {
 			this.color = new Color(244, 235, 124);
 		}
-		this.row = row;
 		this.column = column;
+		this.row = row;
 	}
 	
 	public Color getColor() {
