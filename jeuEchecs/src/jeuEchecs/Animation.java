@@ -1,9 +1,9 @@
 package jeuEchecs;
 
 public class Animation implements Runnable{
-	Panneau pan;
+	private Panel pan;
 	
-	public Animation(Panneau pan) {
+	Animation(Panel pan) {
 		this.pan = pan;
 	}
 

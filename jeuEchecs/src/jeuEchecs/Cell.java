@@ -8,11 +8,20 @@ public class Cell {
 	private int column;
 	private Piece piece = null;
 	
-	public Cell(Color color, int row, int column) {
-		this.color = color;
+	public final static int BLACK = 0;
+	public final static int WHITE = 1;
+	
+	public Cell(int color, int column, int row) {
+		if (color == BLACK) {
+			this.color = new Color(50, 10, 10);
+		} else {
+			this.color = new Color(244, 235, 124);
+		}
+		this.row = row;
+		this.column = column;
 	}
 	
-	public Color getCouleur() {
+	public Color getColor() {
 		return this.color;
 	}
 	
@@ -24,5 +33,16 @@ public class Cell {
 	}
 	public void setColor(Color color) {
 		this.color = color;
+	}
+	
+	public Piece getPiece() {
+		return this.piece;
+	}
+	public void setPiece(Piece piece) {
+		this.piece = piece;
+	}
+	
+	public String toString() {
+		return "Column : " + column + " - Row : " + row;
 	}
 }

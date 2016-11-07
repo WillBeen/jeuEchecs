@@ -1,29 +1,24 @@
 package jeuEchecs;
 
-import java.awt.Color;
+import java.awt.Image;
 
-public class Piece {
-	private String nom;
-	private Color couleur;
-	private Cell cellule;
+public abstract class Piece {
+	protected int color;
+	protected Image img;
+	public static final int BLACK = 0;
+	public static final int WHITE = 1;
 	
-	Piece(String nom, Color couleur, Cell cellule) {
-		this.nom = nom;
-		this.couleur = couleur;
-		this.cellule = cellule;
-	}
-	
-	public String getNom() {
-		return this.nom;
-	}
-	public Color getCouleur() {
-		return this.couleur;
-	}
-	public Cell getCellule() {
-		return this.cellule;
-	}
-	public void setCellule(Cell cellule) {
-		this.cellule = cellule;
+	Piece(int color) {
+		this.color = color;
 	}
 
+	public abstract boolean isMoveAllowed(Cell from, Cell to, Board board);
+	
+	public int getColor() {
+		return this.color;
+	}
+
+	public Image getImage() {
+		return this.img;
+	}
 }
