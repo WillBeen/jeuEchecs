@@ -1,7 +1,5 @@
 package jeuEchecs;
 
-import java.awt.Color;
-
 public abstract class Board {
 	private Cell[][] board;
 	
@@ -38,7 +36,7 @@ public abstract class Board {
 	
 	public void movePiece(Cell from, Cell to) {
 //		from.setPiece(board[from.x][from.y].getPiece());
-		if (from.getPiece().isMoveAllowed(from, to)) {
+		if (from.getPiece().isMoveAllowed(from, to, this)) {
 			to.setPiece(from.getPiece());
 			from.setPiece(null);
 		}

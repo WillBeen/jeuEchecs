@@ -21,10 +21,11 @@ public class DraughtPiece extends Piece {
 	}
 
 //	Returns a (row,column) position array in order to say where this piece can go
-	public boolean isMoveAllowed(Cell from, Cell to) {
-		boolean result = true;
+	public boolean isMoveAllowed(Cell from, Cell to, Board board) {
+		boolean destinationIsEmpty;
+		boolean moveIsOK;
 //		False if there is already a piece on the target cell
-		result = to.getPiece() == null;
+		destinationIsEmpty = to.getPiece() == null;
 //		Look at the direction of the move
 		int direction;
 		if (color == Piece.BLACK) {
@@ -32,8 +33,13 @@ public class DraughtPiece extends Piece {
 		} else {
 			direction = -1;
 		}
-		result &= (to.getRow() - from.getRow()) == direction;
-		return result;
+		moveIsOK = (to.getRow() - from.getRow()) == direction;
+//		True if the piece "eats" an ennemy pice
+		moveIsOK |= (Math.abs(from.getRow() - to.getRow()) == 2)
+				&& (Math.abs(from.getColumn() - to.getColumn()) == 2);
+//				&& (board.getCell((to.getRow() + from.getRow()) / 2, (to.getColumn() +from.getColumn()) / 2).getPiece().getColor()
+//						!= from.getPiece().getColor());
+		return destinationIsEmpty && moveIsOK;
 	}
 
 }

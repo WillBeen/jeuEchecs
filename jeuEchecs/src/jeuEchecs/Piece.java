@@ -12,7 +12,7 @@ public abstract class Piece {
 		this.color = color;
 	}
 	
-	public abstract boolean isMoveAllowed(Cell from, Cell to);
+	public abstract boolean isMoveAllowed(Cell from, Cell to, Board board);
 	
 	public int getColor() {
 		return this.color;
