@@ -50,6 +50,9 @@ public class EnglishDraughtKing extends Piece {
 		if (isMoveAllowed(from, to, board)) {
 			to.setPiece(this);
 			from.setPiece(null);
+			int columnDirection = (int)Math.signum(to.getColumn() - from.getColumn());
+			int rowDirection = (int)Math.signum(to.getRow() - from.getRow());
+			board.getCell(to.getColumn() - columnDirection, to.getRow() - rowDirection).setPiece(null);
 		}
 	}
 

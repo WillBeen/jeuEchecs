@@ -22,9 +22,7 @@ public class Window extends JFrame implements MouseListener, MouseMotionListener
 		this.setLocationRelativeTo(null);
 		this.setContentPane(pan);
 	    pan.addMouseMotionListener(this);
-//	    addMouseMotionListener(this);
 	    pan.addMouseListener(this);
-//	    addMouseListener(this);
 		this.setVisible(true);
 		Thread threadAnim = new Thread(new Animation(pan));
 		threadAnim.start();
