@@ -5,6 +5,11 @@ public abstract class DraughtBoard extends Board{
 //		this(8, 8);
 //	}
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public DraughtBoard(int width, int height, int rowNbPerPlayer) {
 		this.initCells(width, height);
 		for (int i = 0; i < width; i++) {

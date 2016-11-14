@@ -1,10 +1,15 @@
 package jeuEchecs;
 
 import java.awt.Image;
+import java.io.Serializable;
 
-public abstract class Piece {
+public abstract class Piece implements Serializable {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected int color;
-	protected Image img;
+	protected String img;
 	public static final int BLACK = 0;
 	public static final int WHITE = 1;
 	
@@ -18,9 +23,7 @@ public abstract class Piece {
 		return this.color;
 	}
 
-	public Image getImage() {
-		return this.img;
-	}
+	public abstract Image getImage();
 	
 	public abstract void movePiece(Cell from, Cell to, Board board);
 }

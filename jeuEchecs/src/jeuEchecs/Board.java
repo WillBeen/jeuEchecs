@@ -1,9 +1,23 @@
 package jeuEchecs;
 
-public abstract class Board {
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+
+public abstract class Board implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	protected Cell[][] board;
+//	turn : to know whose turn it is
+	int turn = Piece.BLACK;
 	
 	public Board() {
+		this(8,8);
 	}
 	
 	public Board(int hauteur, int largeur) {
@@ -34,5 +48,47 @@ public abstract class Board {
 	}
 	public Cell getCell(int column, int row) {
 		return this.board[row][column];
+	}
+
+	public void saveGame() {
+		ObjectOutputStream oos = null;
+		
+		try {
+			oos = new ObjectOutputStream(new FileOutputStream("d:\\saveboard.ser"));
+			oos.writeObject(board);
+			oos.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (oos != null) {
+					oos.flush();
+					oos.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void loadGame() {
+		ObjectInputStream ois = null;
+		
+		try {
+			ois = new ObjectInputStream(new FileInputStream("d:\\saveboard.ser"));
+			board = (Cell[][]) ois.readObject();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if (ois != null) {
+					ois.close();
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 }

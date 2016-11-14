@@ -1,8 +1,13 @@
 package jeuEchecs;
 
 import java.awt.Color;
+import java.io.Serializable;
 
-public class Cell {
+public class Cell implements Serializable{
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private Color color;
 	private int row;
 	private int column;

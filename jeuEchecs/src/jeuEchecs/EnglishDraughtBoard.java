@@ -2,6 +2,11 @@ package jeuEchecs;
 
 public class EnglishDraughtBoard extends DraughtBoard {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	public EnglishDraughtBoard() {
 		super(8, 8, 3);
 //		temporary : to test the King moves

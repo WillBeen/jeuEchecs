@@ -1,5 +1,6 @@
 package jeuEchecs;
 
+import java.awt.Image;
 import java.awt.Point;
 import java.io.File;
 import java.io.IOException;
@@ -8,17 +9,18 @@ import javax.imageio.ImageIO;
 
 public class EnglishDraughtKing extends Piece {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	EnglishDraughtKing(int color) {
 		super(color);
-		try {
-			if (color == Piece.BLACK) {
-				this.img = ImageIO.read(new File("images/draughts/blackDraughtKing.png"));
-			} else {
-				this.img = ImageIO.read(new File("images/draughts/whiteDraughtKing.png"));
-			}
-        } catch (IOException e) {
-        	e.printStackTrace();
-        }
+		if (color == Piece.BLACK) {
+			img ="images/draughts/blackDraughtKing.png";
+		} else {
+			img = "images/draughts/whiteDraughtKing.png";
+		}
 	}
 
 	@Override
@@ -54,6 +56,17 @@ public class EnglishDraughtKing extends Piece {
 			int rowDirection = (int)Math.signum(to.getRow() - from.getRow());
 			board.getCell(to.getColumn() - columnDirection, to.getRow() - rowDirection).setPiece(null);
 		}
+	}
+
+	@Override
+	public Image getImage() {
+		Image image = null;
+		try {
+				image = ImageIO.read(new File(img));
+        } catch (IOException e) {
+        	e.printStackTrace();
+        }
+		return image;
 	}
 
 }

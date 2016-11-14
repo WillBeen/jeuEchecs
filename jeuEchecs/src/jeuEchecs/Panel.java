@@ -5,10 +5,15 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 
+import javax.swing.AbstractButton;
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class Panel extends JPanel {
+public class Panel extends JPanel implements ActionListener {
 	/**
 	 * 
 	 */
@@ -26,13 +31,30 @@ public class Panel extends JPanel {
 	private Cell fromCell = null;
 	private Cell toCell = null;
 	private boolean mousePressed = false;
-	
-//	Debug msg to display
-	public String dbgMsg = "";
+	private JButton btnSaveGame;
+	private JButton btnLoadGame;
 	
 	public Panel() {
 //		board = new Board(8,8);
 		board = (Board)new EnglishDraughtBoard();
+		
+//		SaveGame button
+		btnSaveGame = new JButton("Save this game");
+		btnSaveGame.setVerticalTextPosition(AbstractButton.CENTER);
+		btnSaveGame.setHorizontalTextPosition(AbstractButton.LEADING);
+		btnSaveGame.setMnemonic(KeyEvent.VK_D);
+		btnSaveGame.setActionCommand("saveGame");
+		btnSaveGame.addActionListener(this);
+		add(btnSaveGame);
+		
+//		LoadGame button
+		btnLoadGame = new JButton("Load a saved game");
+		btnLoadGame.setVerticalTextPosition(AbstractButton.CENTER);
+		btnLoadGame.setHorizontalTextPosition(AbstractButton.LEADING);
+		btnLoadGame.setMnemonic(KeyEvent.VK_D);
+		btnLoadGame.setActionCommand("loadGame");
+		btnLoadGame.addActionListener(this);
+		add(btnLoadGame);
 	}
 	
 //	Determines the width (= height) of each cell
@@ -71,6 +93,8 @@ public class Panel extends JPanel {
 		
 		setCursorOnBoard(cursorX, cursorY);
 		if (this.cursorOnPlate) {
+//			SAVES THE DEFAULT STOKE
+			BasicStroke defaultBS = (BasicStroke)g.getStroke();
 //			CHANGES THE DRAWINLINE TO A DASHED LINE (the dashPhase property is animated)
 			BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
                     BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
@@ -92,13 +116,14 @@ public class Panel extends JPanel {
 					g.drawLine(cellCenter(fromCell).x, cellCenter(fromCell).y, cellCenter(toCell).x, cellCenter(toCell).y);
 				}
 			}
-		}				
+//			SETS THE DEFAULT STOKE BACK AS ACTIVE STROKE
+			g.setStroke(defaultBS);
+		}	
 		
-		
-//		MESSAGE DE DEBUG
-		g.setColor(Color.BLACK);
-//		this.dbgMsg = from.toString() + "###" + to.toString();
-		g.drawString(this.dbgMsg, 10, bordure - 5);
+//		POSITIONNEMENT DU BOUTON DE SAUVEGARDE DE LA PARTIE
+//		btnSaveGame.setLocation(2 * bordure + getWidth(), bordure);
+		btnSaveGame.setLocation(2 * bordure + this.getBoardWidth(), bordure);
+		btnLoadGame.setLocation(btnSaveGame.getLocation().x, btnSaveGame.getLocation().y + btnSaveGame.getHeight() + 10);
 	}
 	
 	public void animation() {
@@ -238,6 +263,16 @@ public class Panel extends JPanel {
 			if ((getCell(from) != getCell(to)) && (getCell(from).getPiece() != null)) {
 				board.movePiece(getCell(from), getCell(to));
 			}
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand()) {
+		case "saveGame" : board.saveGame();
+		break;
+		case "loadGame" : board.loadGame();
+		break;
 		}
 	}
 }
