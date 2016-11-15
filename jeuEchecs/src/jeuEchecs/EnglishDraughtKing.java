@@ -69,4 +69,9 @@ public class EnglishDraughtKing extends Piece {
 		return image;
 	}
 
+	@Override
+	public boolean canEat(Cell cell, Board board) {
+		return false;
+	}
+
 }

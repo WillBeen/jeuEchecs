@@ -1,9 +1,6 @@
 package jeuEchecs;
 
 public abstract class DraughtBoard extends Board{
-//	public DraughtBoard() {
-//		this(8, 8);
-//	}
 	
 	/**
 	 * 
@@ -11,7 +8,7 @@ public abstract class DraughtBoard extends Board{
 	private static final long serialVersionUID = 1L;
 
 	public DraughtBoard(int width, int height, int rowNbPerPlayer) {
-		this.initCells(width, height);
+		this.initCells();
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				if (((i + j) % 2) == 1) {

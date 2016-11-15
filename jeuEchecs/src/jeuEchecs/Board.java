@@ -13,6 +13,7 @@ public abstract class Board implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	protected Cell[][] board;
+	
 //	turn : to know whose turn it is
 	int turn = Piece.BLACK;
 	
@@ -21,13 +22,12 @@ public abstract class Board implements Serializable{
 	}
 	
 	public Board(int hauteur, int largeur) {
-		initCells(hauteur, largeur);
+		board = new Cell[hauteur][largeur];
 	}
 	
-	protected void initCells(int largeur, int hauteur) {
-		board = new Cell[hauteur][largeur];
-		for (int i = 0; i < hauteur; i++) {
-			for (int j = 0; j < largeur; j++) {
+	protected void initCells() {
+		for (int i = 0; i < board.length; i++) {
+			for (int j = 0; j < board[0].length; j++) {
 				if ((i + j) % 2 == 0) {
 					board[i][j] = new Cell(Cell.WHITE, j, i);
 				} else {
@@ -37,9 +37,21 @@ public abstract class Board implements Serializable{
 		}
 	}
 	
+//	Sets the "canEat" boolean for every cell of the board
+	public void setCanEat() {
+		for (Cell[] row : board) {
+			for (Cell c : row) {
+				c.setCanEat(this);
+			}
+		}
+	}
+	
 	public abstract void movePiece(Cell from, Cell to);
 	
 //	ACCESSEURS
+	public Cell[][] getBoard() {
+		return board;
+	}
 	public int getHeight() {
 		return this.board.length;
 	}
@@ -54,7 +66,7 @@ public abstract class Board implements Serializable{
 		ObjectOutputStream oos = null;
 		
 		try {
-			oos = new ObjectOutputStream(new FileOutputStream("d:\\saveboard.ser"));
+			oos = new ObjectOutputStream(new FileOutputStream("saveboard.ser"));
 			oos.writeObject(board);
 			oos.flush();
 		} catch (IOException e) {
@@ -75,7 +87,7 @@ public abstract class Board implements Serializable{
 		ObjectInputStream ois = null;
 		
 		try {
-			ois = new ObjectInputStream(new FileInputStream("d:\\saveboard.ser"));
+			ois = new ObjectInputStream(new FileInputStream("saveboard.ser"));
 			board = (Cell[][]) ois.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -105,4 +105,24 @@ public class DraughtPiece extends Piece {
         }
 		return image;
 	}
+
+	public boolean canEat(Cell cell, Board board) {
+		boolean canEat = false;
+		int[] possibleDirectionX = {-1, 1};
+		int[] possibleDirectionY = {-1, 1};
+		for (int dirX : possibleDirectionX) {
+			for (int dirY : possibleDirectionY) {
+				Point dest = new Point(cell.getColumn() + 2 * dirX, cell.getRow() + 2 * dirY);
+				Point eaten = new Point(cell.getColumn() + dirX, cell.getRow() + dirY);
+				if ((dest.x >= 0) && (dest.x < board.getWidth())
+						&& (dest.y >= 0) && (dest.y < board.getHeight())) {
+					if (board.getCell(eaten.x, eaten.y).getPiece() != null) {
+						canEat |= (board.getCell(eaten.x, eaten.y).getPiece().getColor() != color)
+								&& (board.getCell(dest.x, dest.y).getPiece() == null);
+					}
+				}
+			}
+		}
+		return canEat;
+	}
 }

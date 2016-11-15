@@ -31,30 +31,33 @@ public class Panel extends JPanel implements ActionListener {
 	private Cell fromCell = null;
 	private Cell toCell = null;
 	private boolean mousePressed = false;
-	private JButton btnSaveGame;
-	private JButton btnLoadGame;
+	private ButtonDescription[] buttonDescriptions;
+	private JButton[] actionButtons;
+//	private JButton btnSaveGame;
+//	private JButton btnLoadGame;
 	
 	public Panel() {
 //		board = new Board(8,8);
 		board = (Board)new EnglishDraughtBoard();
 		
-//		SaveGame button
-		btnSaveGame = new JButton("Save this game");
-		btnSaveGame.setVerticalTextPosition(AbstractButton.CENTER);
-		btnSaveGame.setHorizontalTextPosition(AbstractButton.LEADING);
-		btnSaveGame.setMnemonic(KeyEvent.VK_D);
-		btnSaveGame.setActionCommand("saveGame");
-		btnSaveGame.addActionListener(this);
-		add(btnSaveGame);
+//		Initializes button
+		int buttonNumber = 3;
+		buttonDescriptions = new ButtonDescription[buttonNumber];
+		actionButtons = new JButton[buttonNumber];
+		int index = 0;
+		buttonDescriptions[index++] = new ButtonDescription("Start a new game", "newGame");
+		buttonDescriptions[index++] = new ButtonDescription("Save this game", "saveGame");
+		buttonDescriptions[index++] = new ButtonDescription("Load a saved game", "loadGame");
 		
-//		LoadGame button
-		btnLoadGame = new JButton("Load a saved game");
-		btnLoadGame.setVerticalTextPosition(AbstractButton.CENTER);
-		btnLoadGame.setHorizontalTextPosition(AbstractButton.LEADING);
-		btnLoadGame.setMnemonic(KeyEvent.VK_D);
-		btnLoadGame.setActionCommand("loadGame");
-		btnLoadGame.addActionListener(this);
-		add(btnLoadGame);
+		for(int i = 0; i < buttonDescriptions.length; i++) {
+			actionButtons[i] = new JButton(buttonDescriptions[i].getText());
+			actionButtons[i].setVerticalTextPosition(AbstractButton.CENTER);
+			actionButtons[i].setHorizontalTextPosition(AbstractButton.LEADING);
+			actionButtons[i].setMnemonic(KeyEvent.VK_D);
+			actionButtons[i].setActionCommand(buttonDescriptions[i].getAction());
+			actionButtons[i].addActionListener(this);
+			add(actionButtons[i]);
+		}
 	}
 	
 //	Determines the width (= height) of each cell
@@ -91,21 +94,39 @@ public class Panel extends JPanel implements ActionListener {
 				this.board.getWidth() * this.coteCellule,
 				this.board.getHeight() * this.coteCellule);
 		
+//		POSITIONNEMENT DU BOUTON DE SAUVEGARDE DE LA PARTIE
+//		btnSaveGame.setLocation(2 * bordure + getWidth(), bordure);
+		for (int i = 0; i < actionButtons.length; i++) {
+			actionButtons[i].setLocation(2 * bordure + this.getBoardWidth(), 
+					bordure + (actionButtons[i].getHeight() + 10) * i);
+		}
+		
+//		DEBUG MSG : displays true if the piece can eat, false if it can't
+		String str = "";
+		if (isOnBoard()) {
+			Cell c = board.getCell(this.xToColumn(cursorX), yToRow(cursorY));
+//			if (c.getPiece() != null) {
+//				str =  c.getPiece().canEat(c, board) + "";
+//			}
+			str =  c.getCanEat() + "";
+		}
+		g.drawString(str, 10, 10);
+		
 		setCursorOnBoard(cursorX, cursorY);
+//		SAVES THE DEFAULT STOKE
+		BasicStroke defaultBS = (BasicStroke)g.getStroke();
+//		CHANGES THE DRAWINLINE TO A DASHED LINE (the dashPhase property is animated)
+		BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
+                BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
 		if (this.cursorOnPlate) {
-//			SAVES THE DEFAULT STOKE
-			BasicStroke defaultBS = (BasicStroke)g.getStroke();
-//			CHANGES THE DRAWINLINE TO A DASHED LINE (the dashPhase property is animated)
-			BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
-                    BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
 			g.setStroke(bs);
-//			HIGHLIGHTS THE MOUSEOVERED CELL IF THE MOUSE BUTTON IS NOT PRESSED
-			if (!mousePressed) {
-				g.setColor(Color.BLUE);
-				g.drawRect(this.columnToX(this.xToColumn(cursorX)),
-						this.rowToY(this.yToRow(cursorY)),
-						this.coteCellule, this.coteCellule);
-			}
+////			HIGHLIGHTS THE MOUSEOVERED CELL IF THE MOUSE BUTTON IS NOT PRESSED
+//			if (!mousePressed) {
+//				g.setColor(Color.BLUE);
+//				g.drawRect(this.columnToX(this.xToColumn(cursorX)),
+//						this.rowToY(this.yToRow(cursorY)),
+//						this.coteCellule, this.coteCellule);
+//			}
 //			DRAWS THE MOVEMENT LINE
 			if (fromCell != null && toCell != null) {
 				if (fromCell.getPiece() != null) {
@@ -116,14 +137,18 @@ public class Panel extends JPanel implements ActionListener {
 					g.drawLine(cellCenter(fromCell).x, cellCenter(fromCell).y, cellCenter(toCell).x, cellCenter(toCell).y);
 				}
 			}
-//			SETS THE DEFAULT STOKE BACK AS ACTIVE STROKE
-			g.setStroke(defaultBS);
 		}	
-		
-//		POSITIONNEMENT DU BOUTON DE SAUVEGARDE DE LA PARTIE
-//		btnSaveGame.setLocation(2 * bordure + getWidth(), bordure);
-		btnSaveGame.setLocation(2 * bordure + this.getBoardWidth(), bordure);
-		btnLoadGame.setLocation(btnSaveGame.getLocation().x, btnSaveGame.getLocation().y + btnSaveGame.getHeight() + 10);
+//		HIGHLIGHTS THE CELLS CONTAINING A PIECE THAT CAN EAT
+		g.setColor(Color.GREEN);
+		for(Cell[] row : board.getBoard()) {
+			for(Cell c : row) {
+				if (c.getCanEat()) {
+					g.drawRect(columnToX(c.getColumn()), rowToY(c.getRow()), coteCellule, coteCellule);
+				}
+			}
+		}
+//		SETS THE DEFAULT STOKE BACK AS ACTIVE STROKE
+		g.setStroke(defaultBS);
 	}
 	
 	public void animation() {
@@ -264,11 +289,15 @@ public class Panel extends JPanel implements ActionListener {
 				board.movePiece(getCell(from), getCell(to));
 			}
 		}
+//		Sets the "canEat" property for every cell of the board
+		board.setCanEat();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		switch (e.getActionCommand()) {
+		case "newGame" : board.initCells();
+		break;
 		case "saveGame" : board.saveGame();
 		break;
 		case "loadGame" : board.loadGame();

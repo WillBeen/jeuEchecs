@@ -12,6 +12,7 @@ public class Cell implements Serializable{
 	private int row;
 	private int column;
 	private Piece piece = null;
+	private boolean canEat = false;
 	
 	public final static int BLACK = 0;
 	public final static int WHITE = 1;
@@ -49,5 +50,16 @@ public class Cell implements Serializable{
 	
 	public String toString() {
 		return "Column : " + column + " - Row : " + row;
+	}
+	
+	public void setCanEat(Board board) {
+		if (getPiece() != null) {
+			canEat = getPiece().canEat(this, board);
+		} else {
+			canEat = false;
+		}
+	}
+	public boolean getCanEat() {
+		return canEat;
 	}
 }

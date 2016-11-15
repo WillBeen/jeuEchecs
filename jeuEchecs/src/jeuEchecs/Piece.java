@@ -19,6 +19,8 @@ public abstract class Piece implements Serializable {
 
 	public abstract boolean isMoveAllowed(Cell from, Cell to, Board board);
 	
+	public abstract boolean canEat(Cell cell, Board board);
+	
 	public int getColor() {
 		return this.color;
 	}
