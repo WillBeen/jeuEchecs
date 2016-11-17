@@ -30,6 +30,7 @@ public class Panel extends JPanel implements ActionListener {
 	public Point moveTo = null;
 	private Cell fromCell = null;
 	private Cell toCell = null;
+	@SuppressWarnings("unused")
 	private boolean mousePressed = false;
 	private ButtonDescription[] buttonDescriptions;
 	private JButton[] actionButtons;
@@ -94,21 +95,46 @@ public class Panel extends JPanel implements ActionListener {
 				this.board.getWidth() * this.coteCellule,
 				this.board.getHeight() * this.coteCellule);
 		
-//		POSITIONNEMENT DU BOUTON DE SAUVEGARDE DE LA PARTIE
-//		btnSaveGame.setLocation(2 * bordure + getWidth(), bordure);
-		for (int i = 0; i < actionButtons.length; i++) {
-			actionButtons[i].setLocation(2 * bordure + this.getBoardWidth(), 
-					bordure + (actionButtons[i].getHeight() + 10) * i);
+//		sets the location of the  buttons
+		int buttonIndex = 0;
+		while (buttonIndex < actionButtons.length) {
+			actionButtons[buttonIndex].setLocation(2 * bordure + this.getBoardWidth(), 
+					bordure + (actionButtons[buttonIndex].getHeight() + 10) * buttonIndex);
+			buttonIndex++;
 		}
 		
-//		DEBUG MSG : displays true if the piece can eat, false if it can't
+//		displays the player who must play
+		int playerSize = 40;
+		Color playerColor;
+		Color enemyColor;
+		String playerString;
+		if (board.getTurn() == Piece.BLACK) {
+			playerColor = Color.BLACK;
+			enemyColor = Color.WHITE;
+			playerString = "Black player plays !";
+		} else {
+			playerColor = Color.WHITE;
+			enemyColor = Color.BLACK;
+			playerString = "White player plays !";
+		}
+		Point playerPosition = actionButtons[buttonIndex - 1].getLocation();
+		playerPosition.y += 10 + actionButtons[buttonIndex - 1].getHeight();
+		g.setColor(enemyColor);
+		g.fillRect(playerPosition.x, playerPosition.y, playerSize, playerSize);
+		g.setColor(playerColor);
+		g.drawRect(playerPosition.x, playerPosition.y, playerSize, playerSize);
+		g.fillOval(playerPosition.x + 2, playerPosition.y + 2, playerSize - 4, playerSize - 4);
+		g.setColor(Color.BLACK);
+		g.drawString(playerString, playerPosition.x + playerSize + 5, playerPosition.y + playerSize / 2);
+		
+//		DEBUG MSG 
 		String str = "";
 		if (isOnBoard()) {
 			Cell c = board.getCell(this.xToColumn(cursorX), yToRow(cursorY));
-//			if (c.getPiece() != null) {
-//				str =  c.getPiece().canEat(c, board) + "";
-//			}
-			str =  c.getCanEat() + "";
+			str +=  c.getCanMove() + " | ";
+			if (c.getPiece() != null) {
+				str +=  c.getCanMove();
+			}
 		}
 		g.drawString(str, 10, 10);
 		
@@ -120,21 +146,26 @@ public class Panel extends JPanel implements ActionListener {
                 BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
 		g.setStroke(bs);
 		if (this.cursorOnPlate) {
-////			HIGHLIGHTS THE MOUSEOVERED CELL IF THE MOUSE BUTTON IS NOT PRESSED
-//			if (!mousePressed) {
-//				g.setColor(Color.BLUE);
-//				g.drawRect(this.columnToX(this.xToColumn(cursorX)),
-//						this.rowToY(this.yToRow(cursorY)),
-//						this.coteCellule, this.coteCellule);
-//			}
+//			Cell cellUnderMouse = board.getCell(xToColumn(cursorX), yToRow(cursorY));
+			Cell cellUnderMouse = getCell(cursorX, cursorY);
+//			HIGHLIGHTS THE MOUSEOVERED CELL IF THE MOUSE BUTTON IS NOT PRESSED AND IF THE PIECE CAN MOVE
+			if (!mousePressed && cellUnderMouse.getPiece() != null) {
+				if (board.getTurn() == cellUnderMouse.getPiece().getColor() && cellUnderMouse.getCanMove()) {
+					g.setColor(Color.BLUE);
+					g.drawRect(columnToX(cellUnderMouse.getColumn()), rowToY(cellUnderMouse.getRow()),
+							coteCellule, coteCellule);
+				}
+			}
 //			DRAWS THE MOVEMENT LINE
 			if (fromCell != null && toCell != null) {
 				if (fromCell.getPiece() != null) {
-					g.setColor(Color.RED);
-					if (fromCell.getPiece().isMoveAllowed(fromCell, toCell, board)) {
-						g.setColor(Color.GREEN);
+					if (fromCell.getPiece().getCanMove()) {
+						g.setColor(Color.RED);
+						if (fromCell.getPiece().isMoveAllowed(fromCell, toCell, board)) {
+							g.setColor(Color.GREEN);
+						}
+						g.drawLine(cellCenter(fromCell).x, cellCenter(fromCell).y, cellCenter(toCell).x, cellCenter(toCell).y);
 					}
-					g.drawLine(cellCenter(fromCell).x, cellCenter(fromCell).y, cellCenter(toCell).x, cellCenter(toCell).y);
 				}
 			}
 		}	

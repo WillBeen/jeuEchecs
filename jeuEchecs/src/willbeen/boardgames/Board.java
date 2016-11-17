@@ -13,9 +13,10 @@ public abstract class Board implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	protected Cell[][] board;
+	protected boolean[] canEat = {false, false};
 	
 //	turn : to know whose turn it is
-	int turn = Piece.BLACK;
+	private int turn = Piece.WHITE;
 	
 	public Board() {
 		this(8,8);
@@ -23,6 +24,13 @@ public abstract class Board implements Serializable{
 	
 	public Board(int hauteur, int largeur) {
 		board = new Cell[hauteur][largeur];
+//		for (Cell[] row : board) {
+//			for (Cell c : row) {
+//				if (c.getPiece() != null) {
+//					c.getPiece().setCanMove(c, this);
+//				}
+//			}
+//		}
 	}
 	
 	protected void initCells() {
@@ -37,11 +45,30 @@ public abstract class Board implements Serializable{
 		}
 	}
 	
+	public boolean getCanEat(int color) {
+		return canEat[color];
+	}
 //	Sets the "canEat" boolean for every cell of the board
 	public void setCanEat() {
+		for (int i = 0; i < canEat.length; i++) {
+			canEat[i] = false;
+		}
 		for (Cell[] row : board) {
 			for (Cell c : row) {
 				c.setCanEat(this);
+				if (c.getCanEat()) {
+					canEat[c.getPiece().getColor()] = true;
+				}
+			}
+		}
+	}
+	
+	public void setCanMove() {
+		for (Cell[] row : board) {
+			for (Cell c : row) {
+				if (c.getPiece() != null) {
+					c.setCanMove(true);
+				}
 			}
 		}
 	}
@@ -49,6 +76,12 @@ public abstract class Board implements Serializable{
 	public abstract void movePiece(Cell from, Cell to);
 	
 //	ACCESSEURS
+	public int getTurn() {
+		return turn;
+	}
+	public void setTurn(int turn) {
+		this.turn = turn;
+	}
 	public Cell[][] getBoard() {
 		return board;
 	}
@@ -61,6 +94,7 @@ public abstract class Board implements Serializable{
 	public Cell getCell(int column, int row) {
 		return this.board[row][column];
 	}
+	public abstract void nextPlayerTurn();
 
 	public void saveGame() {
 		ObjectOutputStream oos = null;
@@ -68,6 +102,8 @@ public abstract class Board implements Serializable{
 		try {
 			oos = new ObjectOutputStream(new FileOutputStream("saveboard.ser"));
 			oos.writeObject(board);
+			oos.writeObject(canEat);
+			oos.writeObject(turn);
 			oos.flush();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -89,6 +125,8 @@ public abstract class Board implements Serializable{
 		try {
 			ois = new ObjectInputStream(new FileInputStream("saveboard.ser"));
 			board = (Cell[][]) ois.readObject();
+			canEat = (boolean[]) ois.readObject();
+			turn = (int) ois.readObject();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {

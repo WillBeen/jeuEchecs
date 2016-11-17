@@ -12,6 +12,7 @@ public abstract class Piece implements Serializable {
 	protected String img;
 	public static final int BLACK = 0;
 	public static final int WHITE = 1;
+	protected boolean canMove = false;
 	
 	Piece(int color) {
 		this.color = color;
@@ -28,4 +29,15 @@ public abstract class Piece implements Serializable {
 	public abstract Image getImage();
 	
 	public abstract void movePiece(Cell from, Cell to, Board board);
+	
+	public boolean isMyTurn(Board board) {
+		return board.getTurn() == color;
+	}
+	public boolean getCanMove() {
+		return canMove;
+	}
+	public void setCanMove(Cell cell, Board board) {
+//		canMove = isMyTurn(board);
+		canMove = true;
+	}
 }

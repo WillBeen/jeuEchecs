@@ -7,7 +7,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-public class EnglishDraughtKing extends Piece {
+public class EnglishDraughtKing extends DraughtPiece {
 
 	/**
 	 * 
@@ -68,13 +68,16 @@ public class EnglishDraughtKing extends Piece {
         }
 		return image;
 	}
+	
+	public boolean canMove(Cell cell, Board board) {
+		return isMyTurn(board);
+	}
 
 	@Override
 	public boolean canEat(Cell cell, Board board) {
 		boolean canEat = false;
 		int[] possibleDirX = {-1, 1};
 		int[] possibleDirY = {-1, 1};
-		System.out.println("####################");
 		for (int dirX : possibleDirX) {
 			for (int dirY : possibleDirY) {
 				canEat |= canEatOnThisDirection(cell, board, dirX, dirY);

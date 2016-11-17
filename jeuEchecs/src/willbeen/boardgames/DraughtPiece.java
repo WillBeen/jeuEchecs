@@ -32,6 +32,35 @@ public class DraughtPiece extends Piece {
 		 }
 	}
 	 
+	 public void setCanMove(Cell cell, Board board) {
+		 canMove = false;
+//		 if (isMyTurn(board)) {
+			 int[] dirX = {-1, 1};
+			 int[] dirY = {-1, 1};
+			 for (int x : dirX) {
+				 for (int y : dirY) {
+					 int destX = cell.getColumn() + x;
+					 int destY = cell.getRow() + y;
+					 if (destX >= 0 && destX < board.getWidth()
+							 && destY >= 0 && destY <board.getHeight()) {
+						 if (board.getCell(destX, destY).getPiece() == null) {
+							 canMove = true;
+						 }
+					 }
+				 }
+			 }
+//			 if a piece on the board can eat
+			 if (board.getCanEat(color)) {
+//				 if this on can
+				 if (this.canEat(cell, board)) {
+					 canMove = true;
+				 } else {
+					 canMove = false;
+				 }
+			 }
+//		 }
+	 }
+	 
 	 
 
 //	Returns a boolean to determines if the move is a simple move

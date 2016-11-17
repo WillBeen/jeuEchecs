@@ -13,6 +13,7 @@ public class Cell implements Serializable{
 	private int column;
 	private Piece piece = null;
 	private boolean canEat = false;
+	private boolean canMove = false;
 	
 	public final static int BLACK = 0;
 	public final static int WHITE = 1;
@@ -50,6 +51,13 @@ public class Cell implements Serializable{
 	
 	public String toString() {
 		return "Column : " + column + " - Row : " + row;
+	}
+	
+	public boolean getCanMove() {
+		return canMove;
+	}
+	public void setCanMove(boolean canMove) {
+		this.canMove = canMove;
 	}
 	
 	public void setCanEat(Board board) {
