@@ -1,5 +1,5 @@
 package willbeen.boardgames;
-
+ 
 public class Animation implements Runnable{
 	private Panel pan;
 	

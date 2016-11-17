@@ -1,5 +1,5 @@
 package willbeen.boardgames;
-
+ 
 public class ButtonDescription {
 	private String text;
 	private String action;

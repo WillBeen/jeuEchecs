@@ -1,5 +1,5 @@
 package willbeen.boardgames;
-
+ 
 import java.awt.Image;
 import java.io.Serializable;
 

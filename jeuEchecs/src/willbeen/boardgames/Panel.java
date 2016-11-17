@@ -1,5 +1,5 @@
 package willbeen.boardgames;
-
+ 
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
@@ -118,8 +118,8 @@ public class Panel extends JPanel implements ActionListener {
 //		CHANGES THE DRAWINLINE TO A DASHED LINE (the dashPhase property is animated)
 		BasicStroke bs = new BasicStroke(3.0f, BasicStroke.CAP_ROUND,
                 BasicStroke.JOIN_MITER, 10.0f, this.dash, this.dashPhase);
+		g.setStroke(bs);
 		if (this.cursorOnPlate) {
-			g.setStroke(bs);
 ////			HIGHLIGHTS THE MOUSEOVERED CELL IF THE MOUSE BUTTON IS NOT PRESSED
 //			if (!mousePressed) {
 //				g.setColor(Color.BLUE);

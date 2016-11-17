@@ -1,5 +1,5 @@
 package willbeen.boardgames;
-
+ 
 public abstract class DraughtBoard extends Board{
 	
 	/**

@@ -71,6 +71,37 @@ public class EnglishDraughtKing extends Piece {
 
 	@Override
 	public boolean canEat(Cell cell, Board board) {
+		boolean canEat = false;
+		int[] possibleDirX = {-1, 1};
+		int[] possibleDirY = {-1, 1};
+		System.out.println("####################");
+		for (int dirX : possibleDirX) {
+			for (int dirY : possibleDirY) {
+				canEat |= canEatOnThisDirection(cell, board, dirX, dirY);
+			}
+		}
+		return canEat;
+	}
+	
+	private boolean canEatOnThisDirection(Cell cell, Board board, int dirX, int dirY) {
+		int cellX = cell.getColumn();
+		int cellY = cell.getRow();
+		Cell eaten;
+		Cell freeSpace;
+		int i = 1;
+		while (((cellX + (i + 1) * dirX) >= 0) && ((cellX + (i + 1) * dirX) < board.getWidth())
+				&& ((cellY + (i + 1) * dirY >= 0)) && ((cellY + (i + 1) * dirY) < board.getHeight())) {
+			eaten = board.getCell(cellX + i * dirX,  cellY + i * dirY);
+			freeSpace = board.getCell(cellX + (i + 1) * dirX,  cellY + (i + 1) * dirY);
+			if (eaten.getPiece() != null) {
+				if ((eaten.getPiece().getColor() != color) && (freeSpace.getPiece() == null)) {
+					return true;
+				} else {
+					return false;
+				}
+			} 
+			i++;
+		}
 		return false;
 	}
 
