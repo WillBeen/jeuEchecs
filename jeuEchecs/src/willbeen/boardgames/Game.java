@@ -14,6 +14,7 @@ public class Game extends JFrame implements MouseListener, MouseMotionListener {
 	private static final long serialVersionUID = 1L;
 	private Panel pan = new Panel();
 	private Point dragOrigin = new Point();
+	private Board board;
 	
 	public static void main(String[] args) {
 		Game g = new Game();
